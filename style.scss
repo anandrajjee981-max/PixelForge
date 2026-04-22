@@ -1,0 +1,54 @@
+:root{
+    --primary:#A98B76;
+    --secondary:#BFA28C;
+    --third1:#F3E4C9;
+
+
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html.body{
+    width: 100%;
+    height: 100%;
+
+}
+main{
+    #board{
+        width: 100%;
+       min-height: 100vh;
+        position: relative;
+        padding: 10px 20px;
+        background-color: var(--primary);
+        #toolbar{
+            height: 10vh;
+            position: sticky;
+            width: 100%;
+            width: 100%;
+            border-radius: 15px;
+            background-color: var(--secondary);
+           top: 0;
+           left: 0;
+box-shadow: 0 0 10px grey;
+display: flex;
+gap: 5px;
+padding: 3px 4px;
+#box{
+    width: 30px;
+    border: 2px solid black;
+    height: 20px;
+    cursor: pointer;
+}
+#textbox{
+    width: 35px;
+    border: 2px solid black;
+    height: 20px;
+    cursor: pointer;
+}
+
+        }
+    }
+}
