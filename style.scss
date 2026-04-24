@@ -22,7 +22,7 @@ main{
        min-height: 3000px;
         position: relative;
         padding: 10px 20px;
-        background-color: var(--primary);
+        background-color: var(--third1);
         #toolbar{
             z-index: 2200;
             height: 10vh;
@@ -45,7 +45,7 @@ padding: 3px 4px;
 }
 #textbox{
     width: 35px;
-    border: 2px solid black;
+  font-size:1.5rem;
     height: 20px;
     cursor: pointer;
 }

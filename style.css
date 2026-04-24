@@ -21,7 +21,7 @@ main #board {
   min-height: 3000px;
   position: relative;
   padding: 10px 20px;
-  background-color: var(--primary);
+  background-color: var(--third1);
 }
 main #board #toolbar {
   z-index: 2200;
@@ -46,7 +46,7 @@ main #board #toolbar #box {
 }
 main #board #toolbar #textbox {
   width: 35px;
-  border: 2px solid black;
+  font-size: 1.5rem;
   height: 20px;
   cursor: pointer;
 }
