@@ -1,14 +1,50 @@
+
 let board = document.querySelector("#board")
 let toolbar = document.querySelector("#toolbar")
 let boxBtn = document.querySelector("#box")
 let textbox = document.querySelector("#textbox")
 let eraser = document.querySelector("#eraser")
+let imginput = document.querySelector("#imgInput")
 
+let clickX = null
+let clickY = null
+
+//  IMAGE PICK
+// document.querySelector(".gallery").addEventListener("click", () => {
+//     imginput.click()
+// })
+
+imginput.addEventListener("change", function(e){
+    let file = e.target.files[0]
+    if (!file || clickX === null || clickY === null) return
+
+    let img = document.createElement("img")
+    img.src = URL.createObjectURL(file)
+
+    img.style.width = "100px"
+    img.style.height = "100px"
+    img.style.position = "absolute"
+
+    img.style.left = clickX + "px"
+    img.style.top = clickY + "px"
+
+    img.style.cursor = "move"
+    img.classList.add("box")
+
+    img.onload = () => URL.revokeObjectURL(img.src)
+
+    board.append(img)
+
+    imginput.value = ""
+    clickX = null
+    clickY = null
+})
+
+// MODES
 let makebox = false
 let iswrite = false 
 let iserase = false 
 
-// ✅ ERASER MODE
 eraser.addEventListener("click", function () {
     iserase = true
     iswrite = false
@@ -16,7 +52,6 @@ eraser.addEventListener("click", function () {
     board.style.cursor = "crosshair"
 })
 
-// ✅ TEXT MODE
 textbox.addEventListener("click", function () {
     iswrite = true
     iserase = false
@@ -24,7 +59,6 @@ textbox.addEventListener("click", function () {
     board.style.cursor = "text"
 })
 
-// ✅ BOX MODE
 boxBtn.addEventListener("click", function () {
     makebox = true
     iswrite = false
@@ -32,9 +66,11 @@ boxBtn.addEventListener("click", function () {
     board.style.cursor = "default"
 })
 
+// DRAG / RESIZE STATE
 let isresize = false
 let isdrag = false 
 let currentElement = null
+
 let offsetX = 0
 let offsetY = 0
 
@@ -47,9 +83,15 @@ let startmousex = 0
 let startmousey = 0
 let detect = null
 
+// MOUSEDOWN
 board.addEventListener("mousedown", (e) => {
+    let rect = board.getBoundingClientRect()
 
-    // ✅ ERASER PRIORITY
+    // FIXED CLICK POSITION (SCROLL SAFE)
+    clickX = e.clientX - rect.left + board.scrollLeft
+    clickY = e.clientY - rect.top + board.scrollTop
+
+    // ERASER
     if (iserase) {
         if (
             e.target.classList.contains("box") ||
@@ -60,18 +102,17 @@ board.addEventListener("mousedown", (e) => {
         return
     }
 
-    // ✅ CREATE BOX
+    // CREATE BOX
     if (makebox) {
         let div = document.createElement("div")
 
-        let rect = board.getBoundingClientRect()
-        let x = e.clientX - rect.left
-        let y = e.clientY - rect.top
+        let x = clickX
+        let y = clickY
 
         div.style.position = "absolute"
         div.style.left = x + "px"
         div.style.top = y + "px"
-div.style.border = "none"
+
         div.style.width = "100px"
         div.style.height = "100px"
         div.style.border = "2px solid black"
@@ -84,13 +125,12 @@ div.style.border = "none"
         return
     }
 
-    // ✅ CREATE TEXTBOX
+    // CREATE TEXTBOX
     if (iswrite) {
         let div = document.createElement("div")
 
-        let rect = board.getBoundingClientRect()
-        let x = e.clientX - rect.left
-        let y = e.clientY - rect.top
+        let x = clickX
+        let y = clickY
 
         div.style.position = "absolute"
         div.style.left = x + "px"
@@ -111,7 +151,7 @@ div.style.border = "none"
         return
     }
 
-    // ✅ DRAG / RESIZE
+    // DRAG / RESIZE
     if (e.target.classList.contains("box")) {
 
         currentElement = e.target  
@@ -160,15 +200,16 @@ div.style.border = "none"
             isresize = false
             currentElement.style.cursor = "move"
 
-            offsetX = e.clientX - rect.left
-            offsetY = e.clientY - rect.top
+            //  FIXED OFFSET (SCROLL SAFE)
+            offsetX = clickX - currentElement.offsetLeft
+            offsetY = clickY - currentElement.offsetTop
         }
     }
 })
 
+// MOUSEMOVE
 document.addEventListener("mousemove", (e) => {
 
-    // ✅ RESIZE
     if (isresize && currentElement) {
 
         let dx = e.clientX - startmousex
@@ -192,16 +233,19 @@ document.addEventListener("mousemove", (e) => {
         return
     }
 
-    // ✅ DRAG
     if (!isdrag || !currentElement) return
 
-    let x = e.clientX - offsetX
-    let y = e.clientY - offsetY
+    let rect = board.getBoundingClientRect()
+
+    //  FIXED DRAG (SCROLL SAFE)
+    let x = e.clientX - rect.left + board.scrollLeft - offsetX
+    let y = e.clientY - rect.top + board.scrollTop - offsetY
 
     currentElement.style.left = x + "px"
     currentElement.style.top = y + "px"
 })
 
+// MOUSEUP
 document.addEventListener("mouseup", () => {
     isresize = false
     isdrag = false
@@ -212,7 +256,7 @@ document.addEventListener("mouseup", () => {
     }
 })
 
-// ✅ OPTIONAL UX (hover preview for erase)
+// ERASER HOVER UX
 board.addEventListener("mouseover", (e) => {
     if (iserase && (e.target.classList.contains("box") || e.target.classList.contains("text"))) {
         e.target.style.opacity = "0.5"

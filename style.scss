@@ -38,10 +38,19 @@ display: flex;
 gap: 5px;
 padding: 3px 4px;
 #box{
-    width: 30px;
+    width: 2rem;
     border: 2px solid black;
-    height: 20px;
+    height: 2rem;
     cursor: pointer;
+}
+#line{
+    width: 2rem;
+    
+    height: 2rem;
+    cursor: pointer;
+}
+.gallery{
+    font-size: 3rem;
 }
 #textbox{
     width: 35px;

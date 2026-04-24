@@ -39,10 +39,18 @@ main #board #toolbar {
   padding: 3px 4px;
 }
 main #board #toolbar #box {
-  width: 30px;
+  width: 2rem;
   border: 2px solid black;
-  height: 20px;
+  height: 2rem;
   cursor: pointer;
+}
+main #board #toolbar #line {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+main #board #toolbar .gallery {
+  font-size: 3rem;
 }
 main #board #toolbar #textbox {
   width: 35px;
