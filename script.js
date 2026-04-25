@@ -268,3 +268,41 @@ board.addEventListener("mouseout", (e) => {
         e.target.style.opacity = "1"
     }
 })
+
+//gsap start 
+let t1 = gsap.timeline();
+
+
+t1.from("#hero img", {
+    z: -500,          // Start far away (negative Z is "into" the screen)
+    scale: 0.5,       // Adding scale makes the 3D effect much stronger
+    opacity: 0,
+    duration: 1.2,
+    delay : 1,
+    ease: "power3.out",
+}, "-=0.4");          // This makes the image start slightly before the text finishes
+t1.from("#hero span h1", {
+    y: 100, // Changed to Y for a smoother entrance
+    opacity: 0,
+    duration: 0.8,
+    ease: "power4.out",
+    stagger : 0.4
+})
+// t1.from("#hero button",{
+//     x:-400 ,
+   
+//         duration: 0.8,
+//     ease: "power4.out",
+// })
+let hero = document.querySelector("#hero")
+let enter = document.querySelector("#hero button")
+let back = document.querySelector("#board #back")
+enter.addEventListener("click",function(){
+    hero.style.display = "none"
+    board.style.display = "block"
+
+})
+back.addEventListener("click",function(){
+      hero.style.display = "block"
+    board.style.display = "none"
+})
