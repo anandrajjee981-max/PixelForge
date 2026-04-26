@@ -1,4 +1,3 @@
-
 let board = document.querySelector("#board")
 let toolbar = document.querySelector("#toolbar")
 let boxBtn = document.querySelector("#box")
@@ -6,15 +5,15 @@ let textbox = document.querySelector("#textbox")
 let eraser = document.querySelector("#eraser")
 let imginput = document.querySelector("#imgInput")
 
+// ✅ MOBILE FIX
+board.style.touchAction = "none"
+
 let clickX = null
 let clickY = null
 
-//  IMAGE PICK
-// document.querySelector(".gallery").addEventListener("click", () => {
-//     imginput.click()
-// })
-
+// IMAGE PICK
 imginput.addEventListener("change", function(e){
+
     let file = e.target.files[0]
     if (!file || clickX === null || clickY === null) return
 
@@ -30,6 +29,10 @@ imginput.addEventListener("change", function(e){
 
     img.style.cursor = "move"
     img.classList.add("box")
+
+    // ✅ mobile fix
+    img.draggable = false
+    img.style.userSelect = "none"
 
     img.onload = () => URL.revokeObjectURL(img.src)
 
@@ -83,11 +86,11 @@ let startmousex = 0
 let startmousey = 0
 let detect = null
 
-// MOUSEDOWN
-board.addEventListener("mousedown", (e) => {
+// POINTER DOWN (was mousedown)
+board.addEventListener("pointerdown", (e) => {
+
     let rect = board.getBoundingClientRect()
 
-    // FIXED CLICK POSITION (SCROLL SAFE)
     clickX = e.clientX - rect.left + board.scrollLeft
     clickY = e.clientY - rect.top + board.scrollTop
 
@@ -106,12 +109,9 @@ board.addEventListener("mousedown", (e) => {
     if (makebox) {
         let div = document.createElement("div")
 
-        let x = clickX
-        let y = clickY
-
         div.style.position = "absolute"
-        div.style.left = x + "px"
-        div.style.top = y + "px"
+        div.style.left = clickX + "px"
+        div.style.top = clickY + "px"
 
         div.style.width = "100px"
         div.style.height = "100px"
@@ -125,16 +125,13 @@ board.addEventListener("mousedown", (e) => {
         return
     }
 
-    // CREATE TEXTBOX
+    // CREATE TEXT
     if (iswrite) {
         let div = document.createElement("div")
 
-        let x = clickX
-        let y = clickY
-
         div.style.position = "absolute"
-        div.style.left = x + "px"
-        div.style.top = y + "px"
+        div.style.left = clickX + "px"
+        div.style.top = clickY + "px"
 
         div.style.minWidth = "60px"
         div.style.minHeight = "30px"
@@ -155,6 +152,9 @@ board.addEventListener("mousedown", (e) => {
     if (e.target.classList.contains("box")) {
 
         currentElement = e.target  
+
+        // ✅ pointer capture (mobile stable drag)
+        currentElement.setPointerCapture(e.pointerId)
 
         startmousex = e.clientX
         startmousey = e.clientY
@@ -200,15 +200,14 @@ board.addEventListener("mousedown", (e) => {
             isresize = false
             currentElement.style.cursor = "move"
 
-            //  FIXED OFFSET (SCROLL SAFE)
             offsetX = clickX - currentElement.offsetLeft
             offsetY = clickY - currentElement.offsetTop
         }
     }
 })
 
-// MOUSEMOVE
-document.addEventListener("mousemove", (e) => {
+// POINTER MOVE (was mousemove)
+document.addEventListener("pointermove", (e) => {
 
     if (isresize && currentElement) {
 
@@ -237,7 +236,6 @@ document.addEventListener("mousemove", (e) => {
 
     let rect = board.getBoundingClientRect()
 
-    //  FIXED DRAG (SCROLL SAFE)
     let x = e.clientX - rect.left + board.scrollLeft - offsetX
     let y = e.clientY - rect.top + board.scrollTop - offsetY
 
@@ -245,8 +243,13 @@ document.addEventListener("mousemove", (e) => {
     currentElement.style.top = y + "px"
 })
 
-// MOUSEUP
-document.addEventListener("mouseup", () => {
+// POINTER UP (was mouseup)
+document.addEventListener("pointerup", (e) => {
+
+    if (currentElement) {
+        currentElement.releasePointerCapture(e.pointerId)
+    }
+
     isresize = false
     isdrag = false
     currentElement = null
@@ -256,7 +259,7 @@ document.addEventListener("mouseup", () => {
     }
 })
 
-// ERASER HOVER UX
+// ERASER HOVER
 board.addEventListener("mouseover", (e) => {
     if (iserase && (e.target.classList.contains("box") || e.target.classList.contains("text"))) {
         e.target.style.opacity = "0.5"
