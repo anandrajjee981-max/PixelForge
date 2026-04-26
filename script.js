@@ -4,8 +4,10 @@ let boxBtn = document.querySelector("#box")
 let textbox = document.querySelector("#textbox")
 let eraser = document.querySelector("#eraser")
 let imginput = document.querySelector("#imgInput")
+let line = document.querySelector("#line")
 
-// ✅ MOBILE FIX
+
+//  MOBILE FIX
 board.style.touchAction = "none"
 
 let clickX = null
@@ -30,7 +32,7 @@ imginput.addEventListener("change", function(e){
     img.style.cursor = "move"
     img.classList.add("box")
 
-    // ✅ mobile fix
+    //  mobile fix
     img.draggable = false
     img.style.userSelect = "none"
 
@@ -52,6 +54,7 @@ eraser.addEventListener("click", function () {
     iserase = true
     iswrite = false
     makebox = false
+    ismakeline = false
     board.style.cursor = "crosshair"
 })
 
@@ -67,6 +70,15 @@ boxBtn.addEventListener("click", function () {
     iswrite = false
     iserase = false
     board.style.cursor = "default"
+})
+//line logic
+let ismakeline = false
+ let isDrawingLine = false
+let lineStartX = 0
+let lineStartY = 0
+let currentLine = null
+line.addEventListener("click",function(){
+   ismakeline = true
 })
 
 // DRAG / RESIZE STATE
@@ -86,6 +98,7 @@ let startmousex = 0
 let startmousey = 0
 let detect = null
 
+
 // POINTER DOWN (was mousedown)
 board.addEventListener("pointerdown", (e) => {
 
@@ -97,9 +110,7 @@ board.addEventListener("pointerdown", (e) => {
     // ERASER
     if (iserase) {
         if (
-            e.target.classList.contains("box") ||
-            e.target.classList.contains("text")
-        ) {
+            e.target.classList.contains("box") || e.target.classList.contains("text") || e.target.classList.contains("line")) {
             e.target.remove()
         }
         return
@@ -149,13 +160,35 @@ div.style.fontFamily =
         iswrite = false
         return
     }
+    if(ismakeline){
+        isDrawingLine = true
+ lineStartX = clickX
+ lineStartY = clickY
+currentLine = document.createElement("div")
+
+currentLine.style.position = "absolute"
+currentLine.style.height = "2px"
+currentLine.style.width = "0px"   
+currentLine.style.background = "black"
+
+currentLine.style.left = lineStartX + "px"
+currentLine.style.top = lineStartY + "px"
+currentLine.classList.add("line")
+board.append(currentLine)
+
+//  mobile smooth drawing
+board.setPointerCapture(e.pointerId)
+board.append(currentLine)
+return
+
+}
 
     // DRAG / RESIZE
     if (e.target.classList.contains("box")) {
 
         currentElement = e.target  
 
-        // ✅ pointer capture (mobile stable drag)
+        //  pointer capture (mobile stable drag)
         currentElement.setPointerCapture(e.pointerId)
 
         startmousex = e.clientX
@@ -172,7 +205,7 @@ div.style.fontFamily =
         const mouseYInside = e.clientY - rect.top
 
         const gap = 10
-
+ 
         if (mouseXInside > rect.width - gap) {
             isresize = true
             isdrag = false
@@ -197,6 +230,7 @@ div.style.fontFamily =
             detect = "bottom"
             currentElement.style.cursor = "ns-resize"
         }
+
         else {
             isdrag = true
             isresize = false
@@ -210,6 +244,22 @@ div.style.fontFamily =
 
 // POINTER MOVE (was mousemove)
 document.addEventListener("pointermove", (e) => {
+    if (isDrawingLine && currentLine) {
+    let rect = board.getBoundingClientRect()
+
+    let currentX = e.clientX - rect.left + board.scrollLeft
+    let currentY = e.clientY - rect.top + board.scrollTop
+
+    let dx = currentX - lineStartX
+    let dy = currentY - lineStartY
+
+    let length = Math.sqrt(dx * dx + dy * dy)
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI
+
+    currentLine.style.width = length + "px"
+    currentLine.style.transform = `rotate(${angle}deg)`
+    currentLine.style.transformOrigin = "0 0"
+}
 
     if (isresize && currentElement) {
 
@@ -247,6 +297,12 @@ document.addEventListener("pointermove", (e) => {
 
 // POINTER UP (was mouseup)
 document.addEventListener("pointerup", (e) => {
+    if (isDrawingLine) {
+    isDrawingLine = false
+    currentLine = null
+    ismakeline = false
+     board.releasePointerCapture(e.pointerId)
+}
 
     if (currentElement) {
         currentElement.releasePointerCapture(e.pointerId)
@@ -269,7 +325,7 @@ board.addEventListener("mouseover", (e) => {
 })
 
 board.addEventListener("mouseout", (e) => {
-    if (e.target.classList.contains("box") || e.target.classList.contains("text")) {
+    if (e.target.classList.contains("box") || e.target.classList.contains("text")||e.target.classList.contains("line")) {
         e.target.style.opacity = "1"
     }
 })

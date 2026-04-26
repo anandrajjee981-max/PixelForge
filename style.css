@@ -130,16 +130,36 @@ html, body {
   padding: 0 20px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
-#board #toolbar #box, #board #toolbar #line, #board #toolbar #textbox {
-  border: 2px solid var(--third1);
-  transition: transform 0.2s;
-}
-#board #toolbar #box:hover, #board #toolbar #line:hover, #board #toolbar #textbox:hover {
-  transform: scale(1.1);
-}
 #board #toolbar #box {
+  color: black;
+  border: 2px solid var(--bg-dark);
   width: 20px;
   height: 20px;
+  cursor: pointer;
+}
+#board #toolbar #line {
+  color: black;
+  width: 20px;
+  height: 20px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+#board #toolbar #textbox {
+  color: black;
+  width: 20px;
+  height: 20px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+#board #toolbar .gallery {
+  color: black;
+  width: 20px;
+  height: 20px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+#board #toolbar #eraser {
+  color: var(--bg-dark);
   cursor: pointer;
 }
 #board #toolbar #back {
