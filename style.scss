@@ -18,6 +18,7 @@ html, body {
   background-color: var(--primary);
   color: var(--third1);
   overflow-x: hidden;
+    font-family: "Orbitron", sans-serif
 }
 
 #hero {
@@ -115,7 +116,7 @@ html, body {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background: radial-gradient(circle at top left, var(--primary), var(--bg-dark));
+  background: radial-gradient(circle at top left, var(--primary), var(--third1));
 
   #toolbar {
     z-index: 2200;

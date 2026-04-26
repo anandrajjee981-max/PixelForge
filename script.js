@@ -137,7 +137,9 @@ board.addEventListener("pointerdown", (e) => {
         div.style.minHeight = "30px"
         div.style.outline = "none"
         div.style.cursor = "text"
-
+div.style.fontSize = "2rem"
+div.style.color = "black"
+div.style.fontFamily = 
         div.contentEditable = true
         div.classList.add("text")
 
